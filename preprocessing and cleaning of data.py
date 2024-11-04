@@ -62,6 +62,11 @@ df_products_today.write.mode("overwrite").saveAsTable("temp")
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC select * from silver.silver_product
+
+# COMMAND ----------
+
 df_customers=spark.table("bronze.customers")
 df_customers_silver=df_customers.dropna(subset="customer_id").dropDuplicates()
 df_customers_silver.display()

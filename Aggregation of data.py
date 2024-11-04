@@ -20,10 +20,6 @@ df_joined.display()
 
 # COMMAND ----------
 
-df_joined.write.mode("overwrite").saveAsTable("capstone_project_1.gold.joined_table")
-
-# COMMAND ----------
-
 df_joined.createOrReplaceTempView("total_revenue")
 
 # COMMAND ----------
@@ -125,3 +121,32 @@ trends_df.display()
 # COMMAND ----------
 
 trends_df.write.mode("overwrite").saveAsTable("capstone_project_1.gold.trends")
+
+# COMMAND ----------
+
+from pyspark.sql.functions import col, regexp_replace
+
+masked_trends_df = trends_df.withColumn("total_revenue", 
+                                        regexp_replace(col("total_revenue").cast("string"), ".", "*"))
+
+masked_trends_df.display()
+
+
+# COMMAND ----------
+
+from pyspark.sql.functions import col, regexp_replace
+masked_frequency_df = frequency_df.withColumn("number_of_orders", 
+                                              regexp_replace(col("number_of_orders").cast("string"), ".", "*"))
+display(masked_frequency_df)
+
+# COMMAND ----------
+
+from pyspark.sql.functions import col, regexp_replace
+
+masked_top5products_df = top5_products_by_sales_df.withColumn("product_name", 
+                                                    regexp_replace(col("product_name"), ".", "*")) \
+                                        .withColumn("total_sales", 
+                                                    regexp_replace(col("total_sales").cast("string"), ".", "*"))
+
+# Display the masked DataFrame to verify the masking
+display(masked_top5products_df)
